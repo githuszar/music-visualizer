@@ -7,9 +7,9 @@ from spotipy.oauth2 import SpotifyOAuth
 from gerador_imagens import generate_perlin_image  # Função de geração de imagem
 
 # Configuração da API do Spotify
-CLIENT_ID = st.secrets["CLIENT_ID"]
-CLIENT_SECRET = st.secrets["CLIENT_SECRET"]
-REDIRECT_URI = "https://your-music-image.lovable.app/callback"
+CLIENT_ID = "e983ab76967541819658cb3126d9f3df"
+CLIENT_SECRET = "4f4d1a7a3697434db2a0edc2c484f80c"
+REDIRECT_URI = "https://musicvisualizer.streamlit.app"
 SCOPE = "user-top-read"
 
 # Objeto de autenticação
