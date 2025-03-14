@@ -56,13 +56,13 @@ def logout():
 
 if "access_token" not in st.session_state:
     if auth_code:
-        token_info = sp_oauth.get_cached_token()
+        token_info = sp_oauth.get_access_token(auth_code, as_dict=False)
         if not token_info:
             token_info = sp_oauth.get_access_token(auth_code)
         
         if token_info and "access_token" in token_info:
             st.session_state["access_token"] = token_info['access_token']
-            st.experimental_set_query_params()  # Limpar parâmetros da URL
+            st.query_params.clear()  # Limpar parâmetros da URL
             st.rerun()
     else:
         auth_url = sp_oauth.get_authorize_url()
