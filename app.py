@@ -21,7 +21,7 @@ def generate_perlin_image(seed, size=500):
 # Configuração da API do Spotify
 CLIENT_ID = "e983ab76967541819658cb3126d9f3df"
 CLIENT_SECRET = "4f4d1a7a3697434db2a0edc2c484f80c"
-REDIRECT_URI = "https://musicvisualizer.streamlit.app"
+REDIRECT_URI = "https://musicvisualizer.streamlit.app/callback"
 SCOPE = "user-top-read"
 
 # Objeto de autenticação
