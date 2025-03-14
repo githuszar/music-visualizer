@@ -8,7 +8,7 @@ import numpy as np
 # Configuração inicial
 CLIENT_ID = "e983ab76967541819658cb3126d9f3df"
 CLIENT_SECRET = "4f4d1a7a3697434db2a0edc2c484f80c"
-REDIRECT_URI = "https://musicvisualizer.streamlit.app/callback"
+REDIRECT_URI = "https://musicvisualizer.streamlit.app/"
 AUTH_URL = "https://accounts.spotify.com/authorize"
 TOKEN_URL = "https://accounts.spotify.com/api/token"
 API_BASE_URL = "https://api.spotify.com/v1"
