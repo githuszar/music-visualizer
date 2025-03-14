@@ -26,7 +26,7 @@ sp_oauth = SpotifyOAuth(
     client_secret=CLIENT_SECRET,
     redirect_uri=REDIRECT_URI,
     scope=SCOPE,
-    show_dialog=False  # Removendo janela extra de autenticação
+    show_dialog=True  # Permite exibir o popup de autenticação
 )
 
 # Criar interface no Streamlit
@@ -62,8 +62,7 @@ if "access_token" not in st.session_state:
         st.rerun()
     else:
         auth_url = sp_oauth.get_authorize_url()
-        if st.button("🔑 Conectar ao Spotify"):
-            st.markdown(f"<script>window.open('{auth_url}', '_self')</script>", unsafe_allow_html=True)
+        st.markdown(f'<a href="{auth_url}" target="_self">🔑 Conectar ao Spotify</a>', unsafe_allow_html=True)
 else:
     st.success("✅ Autenticado com sucesso!")
     access_token = st.session_state["access_token"]
