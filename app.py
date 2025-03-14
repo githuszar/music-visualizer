@@ -6,7 +6,9 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from PIL import Image
 import numpy as np
+from perlin_noise import PerlinNoise
 
+<<<<<<< HEAD
 try:
     from perlin_noise import PerlinNoise
 except ImportError:
@@ -29,6 +31,24 @@ CLIENT_SECRET = "4f4d1a7a3697434db2a0edc2c484f80c"
 REDIRECT_URI = "https://musicvisualizer.streamlit.app"
 SCOPE = "user-top-read"
 
+=======
+# Função de geração de imagem
+def generate_perlin_image(seed, size=500):
+    noise = PerlinNoise(octaves=3, seed=seed)
+    img_array = np.array([[int((noise([x/size, y/size]) + 1) * 127.5) for x in range(size)] for y in range(size)])
+    img = Image.fromarray(img_array.astype('uint8'), mode='L')
+    img_path = f"visualization/{seed}.png"
+    os.makedirs("visualization", exist_ok=True)
+    img.save(img_path)
+    return img_path
+
+# Configuração da API do Spotify
+CLIENT_ID = "e983ab76967541819658cb3126d9f3df"
+CLIENT_SECRET = "4f4d1a7a3697434db2a0edc2c484f80c"
+REDIRECT_URI = "https://musicvisualizer.streamlit.app"
+SCOPE = "user-top-read"
+
+>>>>>>> 51b279a (Atualização do Music Visualizer com correções e melhorias)
 # Objeto de autenticação
 sp_oauth = SpotifyOAuth(
     client_id=CLIENT_ID,
