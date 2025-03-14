@@ -49,7 +49,7 @@ if "code" in query_params:
     auth_code = query_params["code"]
     token_info = sp_oauth.get_access_token(auth_code)
     st.session_state["access_token"] = token_info["access_token"]
-    st.experimental_rerun()
+    st.rerun()
 
 if "access_token" not in st.session_state:
     auth_url = sp_oauth.get_authorize_url()
@@ -87,4 +87,4 @@ st.markdown("[Compartilhe no Twitter](https://twitter.com/intent/tweet?text=Veja
 # Logout
 if st.button("Sair"):
     del st.session_state["access_token"]
-    st.experimental_rerun()
+    st.rerun()
