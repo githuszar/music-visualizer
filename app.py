@@ -48,6 +48,12 @@ def generate_image():
     img.save(img_path)
     return img_path
 
+# Função de logout
+def logout():
+    st.session_state.pop("access_token", None)
+    st.experimental_set_query_params()  # Limpar parâmetros da URL
+    st.rerun()
+
 if "access_token" not in st.session_state:
     if auth_code:
         token_info = sp_oauth.get_access_token(auth_code)
@@ -63,6 +69,10 @@ else:
     sp = spotipy.Spotify(auth=access_token)
     user_profile = sp.current_user()
     st.write(f"Bem-vindo, {user_profile['display_name']}!")
+
+    # Exibir botão de logout
+    if st.button("🔴 Logout"):
+        logout()
 
     # Exibir Top Artistas
     top_artists = sp.current_user_top_artists(limit=5)
