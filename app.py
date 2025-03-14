@@ -8,7 +8,7 @@ import numpy as np
 # Configuração inicial
 CLIENT_ID = "e983ab76967541819658cb3126d9f3df"
 CLIENT_SECRET = "4f4d1a7a3697434db2a0edc2c484f80c"
-REDIRECT_URI = "https://musicvisualizer.streamlit.app/callback"
+REDIRECT_URI = "https://musicvisualizer.streamlit.app"
 AUTH_URL = "https://accounts.spotify.com/authorize"
 TOKEN_URL = "https://accounts.spotify.com/api/token"
 API_BASE_URL = "https://api.spotify.com/v1"
@@ -77,14 +77,14 @@ st.title("🎨 Music Visualizer")
 auth_url = get_auth_url()
 
 # Captura o código de autenticação diretamente da URL
-query_params = st.experimental_get_query_params()
-auth_code = query_params.get("code", [None])[0]
+query_params = st.query_params
+auth_code = query_params.get("code")
 
 if "access_token" not in st.session_state:
     if auth_code:
         access_token = get_spotify_access_token(auth_code)
         st.session_state["access_token"] = access_token
-        st.experimental_rerun()
+        st.rerun()
     else:
         st.markdown(f"[🔑 Conectar ao Spotify]({auth_url})", unsafe_allow_html=True)
 else:
