@@ -51,7 +51,7 @@ def generate_image():
 # Função de logout
 def logout():
     st.session_state.pop("access_token", None)
-    st.experimental_set_query_params()  # Limpar parâmetros da URL
+    st.query_params.clear()  # Limpar parâmetros da URL
     st.rerun()
 
 if "access_token" not in st.session_state:
