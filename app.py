@@ -6,7 +6,12 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from PIL import Image
 import numpy as np
-from perlin_noise import PerlinNoise
+
+try:
+    from perlin_noise import PerlinNoise
+except ImportError:
+    os.system("pip install perlin-noise")
+    from perlin_noise import PerlinNoise
 
 # Função de geração de imagem
 
