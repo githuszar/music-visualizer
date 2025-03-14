@@ -4,7 +4,19 @@ import pandas as pd
 import streamlit as st
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from gerador_imagens import generate_perlin_image 
+from PIL import Image
+import numpy as np
+from perlin_noise import PerlinNoise
+
+# Função de geração de imagem
+
+def generate_perlin_image(seed, size=500):
+    noise = PerlinNoise(octaves=3, seed=seed)
+    img_array = np.array([[int((noise([x/size, y/size]) + 1) * 127.5) for x in range(size)] for y in range(size)])
+    img = Image.fromarray(img_array.astype('uint8'), mode='L')
+    img_path = f"visualization/{seed}.png"
+    img.save(img_path)
+    return img_path
 
 # Configuração da API do Spotify
 CLIENT_ID = "e983ab76967541819658cb3126d9f3df"
@@ -51,8 +63,7 @@ else:
     st.write(music_index)
     
     # Gerar imagem baseada no índice
-    image_path = f"visualization/{music_index}.png"
-    generate_perlin_image(music_index)
+    image_path = generate_perlin_image(music_index)
     st.image(image_path, caption="Sua representação musical", use_column_width=True)
     
     # Botão para compartilhar a imagem
