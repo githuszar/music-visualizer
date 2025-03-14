@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from gerador_imagens import generate_perlin_image  # Função de geração de imagem
+from gerador_imagens import generate_perlin_image 
 
 # Configuração da API do Spotify
 CLIENT_ID = "e983ab76967541819658cb3126d9f3df"
