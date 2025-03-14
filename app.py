@@ -17,7 +17,7 @@ except ModuleNotFoundError:
 # Configuração inicial utilizando Streamlit Secrets
 CLIENT_ID = st.secrets["CLIENT_ID"]
 CLIENT_SECRET = st.secrets["CLIENT_SECRET"]
-REDIRECT_URI = "https://musicvisualizer.streamlit.app/callback"
+REDIRECT_URI = "https://musicvisualizer.streamlit.app/"
 SCOPE = "user-library-read user-top-read"
 
 # Criando objeto de autenticação
@@ -63,7 +63,7 @@ if "access_token" not in st.session_state:
         if token_info and "access_token" in token_info:
             st.session_state["access_token"] = token_info['access_token']
             st.query_params.clear()  # Limpar parâmetros da URL
-            st.rerun()
+            st.experimental_rerun()  # Retornar para a página principal
     else:
         auth_url = sp_oauth.get_authorize_url()
         st.markdown(f'<a href="{auth_url}" target="_blank">🔑 Conectar ao Spotify</a>', unsafe_allow_html=True)
