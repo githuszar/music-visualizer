@@ -65,7 +65,7 @@ st.title("🎵 Music Visualizer")
 query_params = st.query_params
 if "code" in query_params and "access_token" not in st.session_state:
     auth_code = query_params["code"][0]
-    token_info = sp_oauth.get_access_token(auth_code, as_dict=True)
+    token_info = sp_oauth.get_cached_token() if sp_oauth.get_cached_token() else sp_oauth.get_access_token(auth_code)
     if token_info:
         st.session_state["access_token"] = token_info["access_token"]
         st.session_state["token_info"] = token_info
@@ -96,13 +96,14 @@ try:
 except spotipy.SpotifyException as e:
     st.error(f"Erro ao obter dados do Spotify: {e}")
     st.stop()
-artist_names = [artist["name"] for artist in top_artists.get("items", [])]
+artist_names = [artist["name"] for artist in top_artists["items"]] if "items" in top_artists and top_artists["items"] else []
 user_data["top_artists"] = artist_names
 st.write(", ".join(artist_names) if artist_names else "Nenhum artista encontrado.")
 
 st.subheader("Seus gêneros favoritos")
 genres = set()
-for artist in top_artists.get("items", []):
+if "items" in top_artists and top_artists["items"]:
+    for artist in top_artists["items"]:
     genres.update(artist.get("genres", []))
 user_data["top_genres"] = list(genres)
 st.write(", ".join(genres) if genres else "Nenhum gênero encontrado.")
@@ -113,7 +114,10 @@ st.write(music_index)
 user_data["music_index"] = music_index
 
 if music_index > 0:
+    if music_index > 0:
     image_path = generate_perlin_image(music_index)
+else:
+    image_path = None
     user_data["image_path"] = image_path
     st.image(image_path, caption="Sua representação musical", use_container_width=True)
 else:
