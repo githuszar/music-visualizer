@@ -14,7 +14,7 @@ TOKEN_URL = "https://accounts.spotify.com/api/token"
 API_BASE_URL = "https://api.spotify.com/v1"
 SCOPE = "user-top-read"
 
-# Função para gerar a URL de autenticação
+# Função para gerar a URL de autenticação do Spotify
 def get_auth_url():
     return (f"{AUTH_URL}?client_id={CLIENT_ID}&response_type=code"
             f"&redirect_uri={REDIRECT_URI}&scope={SCOPE}")
@@ -30,13 +30,6 @@ def get_spotify_access_token(auth_code):
     }
     response = requests.post(TOKEN_URL, data=payload)
     return response.json().get("access_token")
-
-# Função para buscar os principais artistas do usuário
-def get_top_artists(access_token):
-    url = f"{API_BASE_URL}/me/top/artists?limit=5"
-    headers = {"Authorization": f"Bearer {access_token}"}
-    response = requests.get(url, headers=headers)
-    return response.json().get("items", [])
 
 # Função para buscar os principais gêneros musicais do usuário
 def get_top_tracks_features(access_token):
@@ -55,7 +48,7 @@ def get_top_tracks_features(access_token):
 
 # Criar diretório para armazenar imagens
 visualization_dir = "visualization"
-os.makedirs(visualization_dir, exist_ok=True)
+os.makedirs(os.path.join(base_dir, visualization_dir), exist_ok=True)
 
 # Função para gerar imagem baseada nas características musicais
 def generate_simple_image(user_id, features):
@@ -74,27 +67,32 @@ def generate_simple_image(user_id, features):
         for y in range(height):
             draw.point((x, y), (int(energy), int(valence), int(danceability)))
 
-    img_path = f"{visualization_dir}/{user_id}.png"
-    img.save(img_path)
+    img_path = os.path.join(visualization_dir, f"{user_id}.png")
+    img.save(os.path.join(base_dir, img_path))
     return img_path
 
 # Criar interface no Streamlit
 st.title("🎨 Music Visualizer")
 
 auth_url = get_auth_url()
-st.markdown(f"[🔑 Clique aqui para autenticar no Spotify]({auth_url})")
 
-auth_code = st.text_input("📥 Cole aqui o código de autenticação do Spotify")
-if st.button("🎵 Gerar Visualização Musical"):
+# Captura o código de autenticação diretamente da URL
+query_params = st.experimental_get_query_params()
+auth_code = query_params.get("code", [None])[0]
+
+if "access_token" not in st.session_state:
     if auth_code:
         access_token = get_spotify_access_token(auth_code)
-        top_artists = get_top_artists(access_token)
-        track_features = get_top_tracks_features(access_token)
-        
-        user_id = "spotify_user"
-        img_path = generate_simple_image(user_id, track_features)
-        
-        st.image(img_path, caption="Imagem baseada no perfil musical do Spotify", use_container_width=True)
-        st.success("✅ Visualização gerada com sucesso!")
+        st.session_state["access_token"] = access_token
+        st.experimental_rerun()
     else:
-        st.warning("⚠️ Por favor, forneça o código de autenticação do Spotify.")
+        st.markdown(f"[🔑 Conectar ao Spotify]({auth_url})", unsafe_allow_html=True)
+else:
+    st.success("✅ Autenticado com sucesso!")
+    access_token = st.session_state["access_token"]
+    track_features = get_top_tracks_features(access_token)
+    
+    user_id = "spotify_user"
+    img_path = generate_simple_image(user_id, track_features)
+    
+    st.image(img_path, caption="Sua imagem musical única", use_container_width=True)

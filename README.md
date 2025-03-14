@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# music-visualizer
-=======
 # Music Visualizer
 
 Este é um aplicativo Streamlit que gera imagens baseadas nas preferências musicais do usuário no Spotify.
@@ -28,4 +25,3 @@ Este é um aplicativo Streamlit que gera imagens baseadas nas preferências musi
 1. Crie um repositório no GitHub e envie os arquivos.
 2. Acesse [Streamlit Cloud](https://share.streamlit.io) e conecte o repositório.
 3. Configure `app.py` como arquivo principal e faça o deploy.
->>>>>>> 33f714a (Primeiro commit - Music Visualizer)
