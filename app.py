@@ -91,14 +91,18 @@ user_id = st.session_state.get("user_id", "unknown_user")
 user_data = load_user_data(user_id) or {}
 
 st.subheader("Seus artistas mais ouvidos")
-top_artists = sp.current_user_top_artists(limit=10)
-artist_names = [artist["name"] for artist in top_artists["items"]]
+try:
+    top_artists = sp.current_user_top_artists(limit=10)
+except spotipy.SpotifyException as e:
+    st.error(f"Erro ao obter dados do Spotify: {e}")
+    st.stop()
+artist_names = [artist["name"] for artist in top_artists.get("items", [])]
 user_data["top_artists"] = artist_names
 st.write(", ".join(artist_names) if artist_names else "Nenhum artista encontrado.")
 
 st.subheader("Seus gêneros favoritos")
 genres = set()
-for artist in top_artists["items"]:
+for artist in top_artists.get("items", []):
     genres.update(artist.get("genres", []))
 user_data["top_genres"] = list(genres)
 st.write(", ".join(genres) if genres else "Nenhum gênero encontrado.")
