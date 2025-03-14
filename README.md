@@ -1,6 +1,6 @@
 # Music Visualizer
 
-Este é um aplicativo Streamlit que gera imagens baseadas nas preferências musicais do usuário no Spotify.
+Este é um aplicativo Streamlit que gera insights baseados nas preferências musicais do usuário no Spotify.
 
 ## Como executar
 
@@ -19,6 +19,17 @@ Este é um aplicativo Streamlit que gera imagens baseadas nas preferências musi
    ```bash
    streamlit run app.py
    ```
+
+## Configuração de Segredos no Streamlit
+
+1. No Streamlit Cloud, adicione as seguintes credenciais em **secrets.toml**:
+   ```toml
+   CLIENT_ID = "SEU_CLIENT_ID"
+   CLIENT_SECRET = "SEU_CLIENT_SECRET"
+   REDIRECT_URI = "https://musicvisualizer.streamlit.app/callback"
+   ```
+
+2. Faça o deploy da aplicação no Streamlit Cloud.
 
 ## Deploy no Streamlit Cloud
 
