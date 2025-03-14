@@ -36,3 +36,4 @@ Este é um aplicativo Streamlit que gera insights baseados nas preferências mus
 1. Crie um repositório no GitHub e envie os arquivos.
 2. Acesse [Streamlit Cloud](https://share.streamlit.io) e conecte o repositório.
 3. Configure `app.py` como arquivo principal e faça o deploy.
+Atualização do README com instruções do projeto refatorado
