@@ -43,13 +43,13 @@ sp_oauth = SpotifyOAuth(
 st.title("🎵 Music Visualizer")
 
 # Verifica autenticação
-query_params = st.experimental_get_query_params()
+query_params = st.query_params
 if "code" in query_params:
     auth_code = query_params["code"][0]  # Extrai o código de autenticação
     token_info = sp_oauth.get_access_token(auth_code, as_dict=True)
     st.session_state["access_token"] = token_info["access_token"]
     st.success("Autenticação realizada com sucesso! Retornando à página principal...")
-    st.experimental_set_query_params()  # Remove os parâmetros da URL
+    st.query_params.clear()  # Remove os parâmetros da URL
     st.stop()  # Para evitar múltiplas execuções
     st.rerun()
 
@@ -89,5 +89,5 @@ st.markdown("[Compartilhe no Twitter](https://twitter.com/intent/tweet?text=Veja
 # Logout
 if st.button("Sair"):
     del st.session_state["access_token"]
-    st.experimental_set_query_params()  # Remove query params para evitar erro
+    st.query_params.clear()  # Remove query params para evitar erro
     st.rerun()
