@@ -4,15 +4,15 @@ import pandas as pd
 import streamlit as st
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from gerador_imagens import generate_image  # Importando a ferramenta de geração de imagens
+from gerador_imagens import generate_perlin_image  # Função de geração de imagem
 
-# Configuração inicial utilizando Streamlit Secrets
+# Configuração da API do Spotify
 CLIENT_ID = st.secrets["CLIENT_ID"]
 CLIENT_SECRET = st.secrets["CLIENT_SECRET"]
-REDIRECT_URI = "https://musicvisualizer.streamlit.app/"
-SCOPE = "user-library-read user-top-read"
+REDIRECT_URI = "https://your-music-image.lovable.app/callback"
+SCOPE = "user-top-read"
 
-# Criando objeto de autenticação
+# Objeto de autenticação
 sp_oauth = SpotifyOAuth(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET,
@@ -21,48 +21,44 @@ sp_oauth = SpotifyOAuth(
     show_dialog=True
 )
 
-# Criar interface no Streamlit
+# Título da aplicação
 st.title("🎵 Music Visualizer")
 
-# Captura o código de autenticação diretamente na mesma página
-query_params = st.query_params
-auth_code = query_params.get("code")
-
-# Função de logout
-def logout():
-    st.session_state.pop("access_token", None)
-    st.query_params = {}
-    st.rerun()
-
+# Verifica autenticação
 if "access_token" not in st.session_state:
-    if auth_code:
-        token_info = sp_oauth.get_access_token(auth_code, as_dict=False)
-        if token_info and "access_token" in token_info:
-            st.session_state["access_token"] = token_info['access_token']
-            st.query_params = {}
-            st.rerun()
-    else:
-        auth_url = sp_oauth.get_authorize_url()
-        st.markdown(f'<a href="{auth_url}" target="_blank">🔑 Conectar ao Spotify</a>', unsafe_allow_html=True)
+    auth_url = sp_oauth.get_authorize_url()
+    st.markdown(f"[Clique aqui para conectar ao Spotify]({auth_url})")
 else:
-    st.success("✅ Autenticado com sucesso!")
-    access_token = st.session_state["access_token"]
-    sp = spotipy.Spotify(auth=access_token)
-    user_profile = sp.current_user()
-    st.write(f"Bem-vindo, {user_profile['display_name']}!")
-
-    # Exibir Top Artistas
-    top_artists = sp.current_user_top_artists(limit=5)
-    st.subheader("Seus Top 5 Artistas no Spotify:")
-    for artist in top_artists['items']:
-        st.write(f"🎤 {artist['name']}")
-
-    # Exibir Top Músicas
-    top_tracks = sp.current_user_top_tracks(limit=5)
-    st.subheader("Suas Top 5 Músicas no Spotify:")
-    for track in top_tracks['items']:
-        st.write(f"🎵 {track['name']} - {track['artists'][0]['name']}")
-
-    # Gerar e exibir imagem baseada na música
-    img_path = generate_image(user_profile['id'], top_tracks['items'])
-    st.image(img_path, caption="Sua imagem musical única", use_column_width=True)
+    token_info = st.session_state["access_token"]
+    sp = spotipy.Spotify(auth=token_info)
+    
+    # Recuperando os top artistas
+    st.subheader("Seus artistas mais ouvidos")
+    top_artists = sp.current_user_top_artists(limit=10)
+    artist_names = [artist["name"] for artist in top_artists["items"]]
+    st.write(", ".join(artist_names))
+    
+    # Recuperando os gêneros musicais
+    genres = set()
+    for artist in top_artists["items"]:
+        genres.update(artist["genres"])
+    st.subheader("Seus gêneros favoritos")
+    st.write(", ".join(genres))
+    
+    # Geração do índice musical
+    music_index = len(artist_names) * 10  # Exemplo de cálculo simples
+    st.subheader("Seu índice musical único:")
+    st.write(music_index)
+    
+    # Gerar imagem baseada no índice
+    image_path = f"visualization/{music_index}.png"
+    generate_perlin_image(music_index)
+    st.image(image_path, caption="Sua representação musical", use_column_width=True)
+    
+    # Botão para compartilhar a imagem
+    st.markdown("[Compartilhe no Twitter](https://twitter.com/intent/tweet?text=Veja%20minha%20imagem%20musical!)")
+    
+    # Logout
+    if st.button("Sair"):
+        del st.session_state["access_token"]
+        st.experimental_rerun()
