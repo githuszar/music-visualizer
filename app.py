@@ -39,7 +39,7 @@ if "access_token" not in st.session_state:
         token_info = sp_oauth.get_access_token(auth_code, as_dict=False)
         if token_info and "access_token" in token_info:
             st.session_state["access_token"] = token_info['access_token']
-            st.query_params.clear()
+            st.query_params = {}
             st.rerun()
     else:
         auth_url = sp_oauth.get_authorize_url()
@@ -64,5 +64,5 @@ else:
         st.write(f"🎵 {track['name']} - {track['artists'][0]['name']}")
 
     # Gerar e exibir imagem baseada na música
-    img_path = generate_image()
+    img_path = generate_image(user_profile['id'], top_tracks['items'])
     st.image(img_path, caption="Sua imagem musical única", use_column_width=True)
