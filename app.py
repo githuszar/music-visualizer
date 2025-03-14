@@ -15,7 +15,6 @@ except ImportError:
     from perlin_noise import PerlinNoise
 
 # Função de geração de imagem
-
 def generate_perlin_image(seed, size=500):
     noise = PerlinNoise(octaves=3, seed=seed)
     img_array = np.array([[int((noise([x/size, y/size]) + 1) * 127.5) for x in range(size)] for y in range(size)])
@@ -44,11 +43,13 @@ sp_oauth = SpotifyOAuth(
 st.title("🎵 Music Visualizer")
 
 # Verifica autenticação
-query_params = st.query_params
+query_params = st.experimental_get_query_params()
 if "code" in query_params:
-    auth_code = query_params["code"]
-    token_info = sp_oauth.get_access_token(auth_code)
+    auth_code = query_params["code"][0]  # Extrai o código de autenticação
+    token_info = sp_oauth.get_access_token(auth_code, as_dict=True)
     st.session_state["access_token"] = token_info["access_token"]
+    st.success("Autenticação realizada com sucesso! Redirecionando...")
+    st.experimental_set_query_params()  # Remove os parâmetros da URL
     st.rerun()
 
 if "access_token" not in st.session_state:
@@ -87,4 +88,5 @@ st.markdown("[Compartilhe no Twitter](https://twitter.com/intent/tweet?text=Veja
 # Logout
 if st.button("Sair"):
     del st.session_state["access_token"]
+    st.experimental_set_query_params()  # Remove query params para evitar erro
     st.rerun()
