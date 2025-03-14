@@ -103,8 +103,8 @@ st.write(", ".join(artist_names) if artist_names else "Nenhum artista encontrado
 st.subheader("Seus gêneros favoritos")
 genres = set()
 if "items" in top_artists and top_artists["items"]:
-    for artist in top_artists["items"]:
-    genres.update(artist.get("genres", []))
+        for artist in top_artists["items"]:
+            genres.update(artist.get("genres", []))
 user_data["top_genres"] = list(genres)
 st.write(", ".join(genres) if genres else "Nenhum gênero encontrado.")
 
