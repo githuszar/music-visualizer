@@ -6,7 +6,7 @@ def generate_image():
     Gera uma imagem baseada em características aleatórias.
     """
     width, height = 500, 500
-    img = Image.new("RGB", (width, height), "black")
+    img = Image.new("RGB", (width, height), "green")
     draw = ImageDraw.Draw(img)
     
     # Definir cores aleatórias baseadas em características musicais
