@@ -51,7 +51,8 @@ if "code" in query_params:
     st.success("Autenticação realizada com sucesso! Você será redirecionado automaticamente.")
     st.query_params.clear()  # Remove os parâmetros da URL
     st.toast("Redirecionando...", icon="🔄")
-st.sleep(2)
+import time
+time.sleep(2)
 st.rerun()
 
 if "access_token" not in st.session_state:
