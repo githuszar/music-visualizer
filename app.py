@@ -62,7 +62,8 @@ if "access_token" not in st.session_state:
         st.rerun()
     else:
         auth_url = sp_oauth.get_authorize_url()
-        st.markdown(f"<script>window.open('{auth_url}', '_self')</script>", unsafe_allow_html=True)
+        if st.button("🔑 Conectar ao Spotify"):
+            st.markdown(f"<script>window.open('{auth_url}', '_self')</script>", unsafe_allow_html=True)
 else:
     st.success("✅ Autenticado com sucesso!")
     access_token = st.session_state["access_token"]
