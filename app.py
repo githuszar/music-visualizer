@@ -14,6 +14,10 @@ TOKEN_URL = "https://accounts.spotify.com/api/token"
 API_BASE_URL = "https://api.spotify.com/v1"
 SCOPE = "user-top-read"
 
+# Criar diretório para armazenar imagens
+visualization_dir = "visualization"
+os.makedirs(visualization_dir, exist_ok=True)
+
 # Função para gerar a URL de autenticação do Spotify
 def get_auth_url():
     return (f"{AUTH_URL}?client_id={CLIENT_ID}&response_type=code"
@@ -46,10 +50,6 @@ def get_top_tracks_features(access_token):
         return features
     return []
 
-# Criar diretório para armazenar imagens
-visualization_dir = "visualization"
-os.makedirs(os.path.join(base_dir, visualization_dir), exist_ok=True)
-
 # Função para gerar imagem baseada nas características musicais
 def generate_simple_image(user_id, features):
     width, height = 500, 500
@@ -67,8 +67,8 @@ def generate_simple_image(user_id, features):
         for y in range(height):
             draw.point((x, y), (int(energy), int(valence), int(danceability)))
 
-    img_path = os.path.join(visualization_dir, f"{user_id}.png")
-    img.save(os.path.join(base_dir, img_path))
+    img_path = f"{visualization_dir}/{user_id}.png"
+    img.save(img_path)
     return img_path
 
 # Criar interface no Streamlit
