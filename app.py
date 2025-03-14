@@ -48,8 +48,9 @@ if "code" in query_params:
     auth_code = query_params["code"][0]  # Extrai o código de autenticação
     token_info = sp_oauth.get_access_token(auth_code, as_dict=True)
     st.session_state["access_token"] = token_info["access_token"]
-    st.success("Autenticação realizada com sucesso! Redirecionando...")
+    st.success("Autenticação realizada com sucesso! Retornando à página principal...")
     st.experimental_set_query_params()  # Remove os parâmetros da URL
+    st.stop()  # Para evitar múltiplas execuções
     st.rerun()
 
 if "access_token" not in st.session_state:
