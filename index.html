@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melodious Visualizer</title>
+    <script>
+        async function authenticateSpotify() {
+            let response = await fetch("http://localhost:5000/auth");
+            let data = await response.json();
+            window.location.href = data.auth_url;
+        }
+
+        async function fetchUserData(accessToken) {
+            let response = await fetch(`http://localhost:5000/user-data/${accessToken}`);
+            let data = await response.json();
+            document.getElementById("artists").innerText = data.top_artists.join(", ");
+            document.getElementById("genres").innerText = data.top_genres.join(", ");
+            document.getElementById("musicIndex").innerText = data.music_index;
+            if (data.image_path) {
+                document.getElementById("musicImage").src = data.image_path;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Melodious Visualizer</h1>
+    <button onclick="authenticateSpotify()">Autenticar com Spotify</button>
+    <h2>Seus artistas mais ouvidos:</h2>
+    <p id="artists">Nenhum artista encontrado.</p>
+    <h2>Seus gêneros favoritos:</h2>
+    <p id="genres">Nenhum gênero encontrado.</p>
+    <h2>Seu índice musical único:</h2>
+    <p id="musicIndex">0</p>
+    <img id="musicImage" src="" alt="Imagem musical">
+</body>
+</html>
