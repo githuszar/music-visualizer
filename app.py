@@ -48,9 +48,11 @@ if "code" in query_params:
     auth_code = query_params["code"][0]  # Extrai o código de autenticação
     token_info = sp_oauth.get_access_token(auth_code, as_dict=True)
     st.session_state["access_token"] = token_info["access_token"]
-    st.success("Autenticação realizada com sucesso! Retornando à página principal...")
+    st.success("Autenticação realizada com sucesso! Você será redirecionado automaticamente.")
     st.query_params.clear()  # Remove os parâmetros da URL
-    st.rerun()
+    st.toast("Redirecionando...", icon="🔄")
+st.sleep(2)
+st.rerun()
 
 if "access_token" not in st.session_state:
     auth_url = sp_oauth.get_authorize_url()
@@ -80,7 +82,7 @@ st.write(music_index)
 
 # Gerar imagem baseada no índice
 image_path = generate_perlin_image(music_index)
-st.image(image_path, caption="Sua representação musical", use_column_width=True)
+st.image(image_path, caption="Sua representação musical", use_container_width=True)
 
 # Botão para compartilhar a imagem
 st.markdown("[Compartilhe no Twitter](https://twitter.com/intent/tweet?text=Veja%20minha%20imagem%20musical!)")
