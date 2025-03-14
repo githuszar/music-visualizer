@@ -103,7 +103,7 @@ st.write(", ".join(artist_names) if artist_names else "Nenhum artista encontrado
 st.subheader("Seus gêneros favoritos")
 genres = set()
 if "items" in top_artists and top_artists["items"]:
-        for artist in top_artists["items"]:
+    for artist in top_artists["items"]:
     genres.update(artist.get("genres", []))
 user_data["top_genres"] = list(genres)
 st.write(", ".join(genres) if genres else "Nenhum gênero encontrado.")
@@ -118,7 +118,7 @@ if music_index > 0:
 else:
     image_path = None
     user_data["image_path"] = image_path
-    st.image(image_path, caption="Sua representação musical", use_container_width=True)
+    st.write("Nenhuma imagem gerada. Índice musical inválido.")
 else:
     st.write("Nenhuma imagem gerada. Índice musical inválido.")
 
