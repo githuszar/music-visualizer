@@ -119,7 +119,6 @@ else:
     image_path = None
     user_data["image_path"] = image_path
     st.write("Nenhuma imagem gerada. Índice musical inválido.")
-else:
     st.write("Nenhuma imagem gerada. Índice musical inválido.")
 
 save_user_data(user_id, user_data)
