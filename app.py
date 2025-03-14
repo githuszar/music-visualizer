@@ -65,7 +65,6 @@ if "access_token" not in st.session_state:
             st.query_params.clear()  # Limpar parâmetros da URL
             st.experimental_rerun()  # Retornar para a página principal
             st.rerun()
-d2b8d45 (Refatoração: Separação da autenticação e gerador de imagens)
     else:
         auth_url = sp_oauth.get_authorize_url()
         st.markdown(f'<a href="{auth_url}" target="_blank">🔑 Conectar ao Spotify</a>', unsafe_allow_html=True)
