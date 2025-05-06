@@ -1,37 +1,58 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melodious Visualizer</title>
-    <script>
-        async function authenticateSpotify() {
-            let response = await fetch("http://localhost:5000/auth");
-            let data = await response.json();
-            window.location.href = data.auth_url;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Melodious Visualizer</title>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; text-align: center; }
+    #musicImage { max-width: 100%; height: auto; display: none; margin-top: 1rem; }
+    #loader { font-style: italic; margin-top: 1rem; }
+  </style>
+  <script>
+    // URL do seu webhook Spotify-OAuth no n8n (configurar no Vercel como NEXT_PUBLIC_SPOTIFY_AUTH_URL)
+    const AUTH_URL = 'https://huszarrrr.app.n8n.cloud/webhook/spotify-auth';
 
-        async function fetchUserData(accessToken) {
-            let response = await fetch(`http://localhost:5000/user-data/${accessToken}`);
-            let data = await response.json();
-            document.getElementById("artists").innerText = data.top_artists.join(", ");
-            document.getElementById("genres").innerText = data.top_genres.join(", ");
-            document.getElementById("musicIndex").innerText = data.music_index;
-            if (data.image_path) {
-                document.getElementById("musicImage").src = data.image_path;
-            }
+    // 1) Dispara o OAuth no Spotify (redirecionamento)
+    function authenticateSpotify() {
+      window.location.href = AUTH_URL;
+    }
+
+    // 2) Ao carregar a página, checa se temos ?code=XYZ e, se tiver, chama o fluxo n8n
+    async function processCallback() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      if (!code) return; // Nenhum código? Não é callback, só exibe o botão
+
+      showLoader(true);
+
+      try {
+        // Chama o mesmo endpoint para finalizar o fluxo e receber JSON com imageUrl etc.
+        const res = await fetch(`${AUTH_URL}?code=${code}`, { method: 'GET' });
+        const data = await res.json();
+
+        if (data.success) {
+          // Preenche os campos
+          document.getElementById('artists').innerText = data.top_artists?.join(', ') || '—';
+          document.getElementById('genres').innerText = data.top_genres?.join(', ') || '—';
+          document.getElementById('musicIndex').innerText = data.musicIndex ?? '';
+          // Exibe a imagem
+          const img = document.getElementById('musicImage');
+          img.src = data.imageUrl;
+          img.style.display = 'block';
+        } else {
+          console.error('Fluxo n8n retornou sucesso=false', data);
         }
-    </script>
-</head>
-<body>
-    <h1>Melodious Visualizer</h1>
-    <button onclick="authenticateSpotify()">Autenticar com Spotify</button>
-    <h2>Seus artistas mais ouvidos:</h2>
-    <p id="artists">Nenhum artista encontrado.</p>
-    <h2>Seus gêneros favoritos:</h2>
-    <p id="genres">Nenhum gênero encontrado.</p>
-    <h2>Seu índice musical único:</h2>
-    <p id="musicIndex">0</p>
-    <img id="musicImage" src="" alt="Imagem musical">
-</body>
-</html>
+      } catch (err) {
+        console.error('Erro ao chamar webhook n8n:', err);
+      } finally {
+        showLoader(false);
+      }
+    }
+
+    function showLoader(on) {
+      document.getElementById('loader').innerText = on ? 'Gerando sua arte musical…' : '';
+    }
+
+    window.addEventListener('load', processCallback);
+  </
